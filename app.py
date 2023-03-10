@@ -1,9 +1,12 @@
-from viktor import ViktorController
+from viktor import ViktorController, File
+from pathlib import Path
+from PIL import Image
 from viktor.parametrization import ViktorParametrization, TextField, IntegerField, TextAreaField, FileField, ActionButton, GeoPointField, OptionField, DateField
 from viktor.views import PlotlyView, PlotlyResult, MapView, MapResult, MapPoint
 import plotly.graph_objects as go
 import csv
 import pandas as pd
+import shutil
 
 class Parametrization(ViktorParametrization):
     asset_name          = TextField("Assetnaam")
@@ -11,11 +14,14 @@ class Parametrization(ViktorParametrization):
     serial_number       = IntegerField("Serienummer")
     buy_year            = DateField("Bouwjaar")
     on_year             = DateField("Inbedrijfname")
-    component_group     = OptionField('Component groep', options=['Generator', 'Motor', 'Electrical Equipment', 'Hulp', 'Transformer', 'Switch','Overig'], default='Overig')
+    component_group     = OptionField('Component group', options=['Generator', 'Motor', 'Common', 'Other'], default='Other')    
+    common_group        = OptionField('Common group', options=['None', 'AC/DC', 'Air', 'Fire Fighting', 'Fuel', 'Lube Oil System', 'Monitoring and Control', 'Steam', 'Switchgear' , 'Waste Oil', 'Water Treatment and Cooling', 'Other'], default='None')
+    location_name       = TextField("Locatienaam")
+    location_coord      = GeoPointField('Locatie')
     asset_description   = TextAreaField("Beschrijving")
     asset_photo_1       = FileField("Foto 1")
     asset_photo_2       = FileField("Foto 2")
-    locatie             = GeoPointField('Locatie')
+    
     
     upload_button       = ActionButton("Upload naar database", method='upload_entry')
     
@@ -29,12 +35,14 @@ class Controller(ViktorController):
     parametrization = Parametrization
     
     def upload_entry(self, params, **kwargs):
-        data = [params.asset_name, params.asset_brand, params.serial_number, params.buy_year, params.on_year, params.component_group, params.asset_description]
+        data = [params.asset_name, params.asset_brand, params.serial_number, params.buy_year, params.on_year, params.component_group, params.common_group, params.asset_description, location_name, params.location_coord]
         
         with open('assetdatabase.csv', 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(data)
         file.close()
+            
+    
 
     @PlotlyView("Assets", duration_guess=15)
     def get_plotly_view(self, params, **kwargs):
