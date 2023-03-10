@@ -8,7 +8,7 @@ import csv
 import pandas as pd
 import shutil
 
-entity_folder_path = Path(__file__).parent
+entity_folder_path = Path(__file__)
 file_path = entity_folder_path.parent / 'assetdatabase.csv'
 
 class Parametrization(ViktorParametrization):
