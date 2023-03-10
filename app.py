@@ -38,7 +38,7 @@ class Controller(ViktorController):
     parametrization = Parametrization
     
     def upload_entry(self, params, **kwargs):
-        data = [params.asset_name, params.asset_brand, params.serial_number, params.buy_year, params.on_year, params.component_group, params.common_group, params.asset_description, location_name, params.location_coord]
+        data = [params.asset_name, params.asset_brand, params.serial_number, params.buy_year, params.on_year, params.component_group, params.common_group, params.asset_description, params.location_name, params.location_coord]
         
         with open(file_path, 'a', newline='') as file:
             writer = csv.writer(file)
